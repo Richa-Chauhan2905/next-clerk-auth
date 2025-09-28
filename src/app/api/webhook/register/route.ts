@@ -36,7 +36,14 @@ export async function POST(req: Request) {
 
   if (eventType === "user.created") {
     try {
-      const { id, first_name, last_name, email_addresses, primary_email_address_id, public_metadata } = evt.data;
+      const {
+        id,
+        first_name,
+        last_name,
+        email_addresses,
+        primary_email_address_id,
+        unsafe_metadata,
+      } = evt.data;
 
       const primaryEmail = email_addresses.find(
         (email: any) => email.id === primary_email_address_id
@@ -53,7 +60,8 @@ export async function POST(req: Request) {
           email: primaryEmail.email_address,
           first_name: first_name ?? "",
           last_name: last_name ?? "",
-          role: (public_metadata?.role as import("@prisma/client").Role) || "USER",
+          role:
+            (unsafe_metadata?.role as import("@prisma/client").Role) || "USER",
         },
       });
 

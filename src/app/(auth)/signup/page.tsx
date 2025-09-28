@@ -31,22 +31,36 @@ const Signup = () => {
   const [mounted, setMounted] = useState(false);
 
   const router = useRouter();
-  if (!isLoaded) return null;
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!isLoaded) return null;
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!isLoaded) return;
 
     try {
+      const res = await fetch("/api/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: emailAddress }),
+      });
+
+      const data = await res.json();
+
+      if (data.exists) {
+        setError("Email already exists. Please use another one.");
+        return; 
+      }
+
       const createdSignup = await signUp.create({
         firstName,
         lastName,
         emailAddress,
         password,
-        // role stored inside Clerk user metadata
         unsafeMetadata: { role },
       });
 
@@ -59,7 +73,7 @@ const Signup = () => {
       setPendingVerification(true);
     } catch (error: any) {
       console.log(JSON.stringify(error, null, 2));
-      setError(error.errors[0]?.message || "Something went wrong");
+      setError(error.errors?.[0]?.message || "Something went wrong");
     }
   }
 
