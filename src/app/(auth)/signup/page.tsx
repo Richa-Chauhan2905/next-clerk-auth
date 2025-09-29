@@ -53,7 +53,7 @@ const Signup = () => {
 
       if (data.exists) {
         setError("Email already exists. Please use another one.");
-        return; 
+        return;
       }
 
       const createdSignup = await signUp.create({
@@ -86,20 +86,16 @@ const Signup = () => {
         await currentSignUp.attemptEmailAddressVerification({
           code,
         });
-
+      if (completeSignup.status !== "complete") {
+        setError(
+          "Verification incomplete. Please try again or check your code."
+        );
+        setPendingVerification(true);
+        return;
+      }
       if (completeSignup.status === "complete") {
-        await fetch("/api/users", {
-          method: "POST",
-          body: JSON.stringify({
-            email: emailAddress,
-            firstName,
-            lastName,
-            role,
-          }),
-          headers: { "Content-Type": "application/json" },
-        });
         await setActive({ session: completeSignup.createdSessionId });
-        router.push("/dashboard");
+        router.replace("/dashboard");
       } else {
         console.log(JSON.stringify(completeSignup, null, 2));
       }
