@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Link } from "lucide-react";
+import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
 
@@ -100,8 +100,8 @@ export default function SignIn() {
         </CardContent>
 
         <CardFooter className="justify-center">
-          <p className="text-sm text-muted-foreground hover:underline">
-            Don&apos;t have an account?{" "}
+          <p className="text-sm text-muted-foreground">
+            Don't have an account?{" "}
             <Link
               href="/signup"
               className="font-medium text-primary hover:underline"
